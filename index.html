@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blitz Stats</title>
+</head>
+<body>
+  <h2>WoT Blitz Stats</h2>
+  <input id="nick" placeholder="Введите ник">
+  <button onclick="loadStats()">Показать</button>
+  <pre id="result"></pre>
+
+<script>
+function loadStats() {
+  const nick = document.getElementById("nick").value;
+  fetch(`/stats?nickname=${nick}`)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    });
+}
+</script>
+</body>
+</html>
