@@ -1,23 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Blitz Stats</title>
+<meta charset="UTF-8">
+<title>WoT Blitz Stats</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #1a1a2e;
+        color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 50px;
+    }
+    h1 {
+        color: #f3a712;
+        margin-bottom: 20px;
+    }
+    input {
+        padding: 10px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: none;
+        width: 250px;
+        margin-right: 10px;
+    }
+    button {
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: none;
+        background-color: #f3a712;
+        color: #1a1a2e;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    button:hover {
+        background-color: #ffcc33;
+    }
+    table {
+        margin-top: 30px;
+        border-collapse: collapse;
+        width: 400px;
+        text-align: left;
+    }
+    th, td {
+        padding: 10px;
+        border-bottom: 1px solid #444;
+    }
+    th {
+        background-color: #162447;
+    }
+    td {
+        background-color: #1f4068;
+    }
+</style>
 </head>
 <body>
-  <h2>WoT Blitz Stats</h2>
-  <input id="nick" placeholder="Введите ник">
-  <button onclick="loadStats()">Показать</button>
-  <pre id="result"></pre>
+
+<h1>WoT Blitz Stats</h1>
+<div>
+    <input id="nick" placeholder="Введите ник">
+    <button onclick="loadStats()">Показать</button>
+</div>
+
+<table id="statsTable" style="display:none;">
+    <tr><th>Параметр</th><th>Значение</th></tr>
+    <tr><td>Ник</td><td id="nickname"></td></tr>
+    <tr><td>Боев</td><td id="battles"></td></tr>
+    <tr><td>Winrate</td><td id="winrate"></td></tr>
+    <tr><td>Средний урон</td><td id="avg_damage"></td></tr>
+    <tr><td>Фраги</td><td id="frags"></td></tr>
+    <tr><td>Выживаемость</td><td id="survival_rate"></td></tr>
+</table>
 
 <script>
 function loadStats() {
-  const nick = document.getElementById("nick").value;
-  fetch(`/stats?nickname=${nick}`)
-    .then(r => r.json())
-    .then(data => {
-      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
-    });
+    const nick = document.getElementById("nick").value;
+    fetch(`/stats?nickname=${nick}`)
+        .then(r => r.json())
+        .then(data => {
+            if(data.error){
+                alert(data.error);
+                document.getElementById("statsTable").style.display = "none";
+                return;
+            }
+            document.getElementById("statsTable").style.display = "table";
+            document.getElementById("nickname").innerText = data.nickname;
+            document.getElementById("battles").innerText = data.battles;
+            document.getElementById("winrate").innerText = data.winrate + "%";
+            document.getElementById("avg_damage").innerText = data.avg_damage;
+            document.getElementById("frags").innerText = data.frags;
+            document.getElementById("survival_rate").innerText = data.survival_rate + "%";
+        });
 }
 </script>
+
 </body>
 </html>
